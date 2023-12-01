@@ -6,29 +6,28 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
-#include "main.h"
+#include "myiic.h"
 
 extern uint16_t Channel_0, Channel_1;	 
 #define Write_success 1
 #define Write_fail 0;	 
 	 
-	 
+#ifdef USE_HARDWARE_I2C
 // I2C address options
 #define ADDR_LOW          	0x52
 #define ADDR_FLOAT        	0x72    // Default address (pin left floating)
 #define ADDR_HIGH         	0x92
+#endif
 
-//#define ADDR_FLOAT_Write 	0x72	 
-//#define ADDR_FLOAT_Read	 	0x73
+#define ADDR_FLOAT_Write 	0x72	 
+#define ADDR_FLOAT_Read	 	0x73
 
 // float
-//#define ADDR_DEVICE		 	0x72
-
+#define ADDR_DEVICE		 	0x72
 // gnd
 //#define ADDR_DEVICE		 	0x52
-
 // vcc
-#define ADDR_DEVICE		 	0x92 
+//#define ADDR_DEVICE		 	0x92 
 	 
 //---------------------------------------------------
 // x       xx      xxxxx 
@@ -123,14 +122,63 @@ extern uint16_t Channel_0, Channel_1;
 #define M5C 0x0000 // 0.00000 * 2^LUX_SCALE
 //---------------------------------------------------
 
-uint8_t I2C_DEV_Write(uint16_t I2C_Addr,uint16_t Register_Addr,uint8_t Register_Data);
+#ifdef USE_HARDWARE_I2C
+
+// 最大传感器数量和总线最大从机数量
+#define MAX_SLAVE_DEVICE	3
+#define MAX_LIGHT_SENSOR	9
+
+// 回调函数类型
+typedef void (*light_sensor_cb)(void);
+
+// 平台相关对象和接口函数
+typedef struct
+{
+	I2C_HandleTypeDef *m_i2c_handle; // I2C句柄
+	uint8_t m_address; // 地址合集
+	uint32_t m_value; // 数据
+	light_sensor_cb interrupt_cb; // 中断回调函数
+} sTSL2581_t;
+
+// 传感器对象集合
+extern sTSL2581_t g_TSL2581_mux[MAX_LIGHT_SENSOR];
+
+//  I2C写一个字节数据
+uint8_t I2C_DEV_Write(sTSL2581_t *obj, uint16_t Register_Addr,uint8_t Register_Data);
+
+//  I2C读一个字节数据
+uint8_t I2C_DEV_Read(sTSL2581_t *obj, uint16_t Register_Addr);
+
+// 驱动相关接口函数，与平台无关
+
+// 初始化TSL2581
+void I2C_DEV_PowerOn(void);
+
+// 关闭TSL2581
+void I2C_DEV_PowerOff(void);
+
+// 重新加载寄存器参数
+void Reload_register(sTSL2581_t *obj);
+
+// 设置中断触发阈值上限和下限，obj为需要设置的传感器对象
+void SET_Interrupt_Threshold(sTSL2581_t *obj, uint16_t min,uint16_t max);
+
+// 读取channel0和channel1的原始数值，并存全局变量中
+void Read_Channel(sTSL2581_t *obj);
+
+// 计算光强lux
+uint32_t calculateLux(sTSL2581_t *obj, uint16_t iGain,uint16_t tIntCycles);
+#else
+uint8_t I2C_DEV_Write(uint16_t I2C_Addr, uint16_t Register_Addr,uint8_t Register_Data);
 uint8_t I2C_DEV_Read(uint16_t Register_Addr);
 
 void I2C_DEV_init(void);
 void Reload_register(void);
 void SET_Interrupt_Threshold(uint16_t min,uint16_t max);
 void Read_Channel(void);
+
 uint32_t calculateLux(uint16_t iGain,uint16_t tIntCycles);
+#endif
 
 #endif
 

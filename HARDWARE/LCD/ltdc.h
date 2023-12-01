@@ -1,6 +1,8 @@
 #ifndef _LCD_H
 #define _LCD_H
 #include "sys.h"
+
+#ifdef USE_RGB_LCD
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32开发板
@@ -77,3 +79,5 @@ void LTDC_Layer_Parameter_Config(u8 layerx,u32 bufaddr,u8 pixformat,u8 alpha,u8 
 u16 LTDC_PanelID_Read(void);				//LCD ID读取函数
 void LTDC_Init(void);						//LTDC初始化函数
 #endif 
+
+#endif

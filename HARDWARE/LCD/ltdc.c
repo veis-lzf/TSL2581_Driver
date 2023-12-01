@@ -1,5 +1,7 @@
 #include "ltdc.h"
 #include "lcd.h"
+
+#ifdef USE_RGB_LCD
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32开发板
@@ -511,3 +513,4 @@ void HAL_LTDC_MspInit(LTDC_HandleTypeDef* hltdc)
     HAL_GPIO_Init(GPIOI,&GPIO_Initure); 
 }
 
+#endif

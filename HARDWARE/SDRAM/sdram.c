@@ -1,5 +1,8 @@
 #include "sdram.h"
 #include "delay.h"
+
+#ifdef USB_EXIT_SRAM
+
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F7开发板
@@ -157,3 +160,5 @@ void FMC_SDRAM_ReadBuffer(u8 *pBuffer,u32 ReadAddr,u32 n)
 		ReadAddr++;
 	}
 }
+
+#endif

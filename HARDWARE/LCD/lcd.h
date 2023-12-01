@@ -2,6 +2,8 @@
 #define __LCD_H		
 #include "sys.h"	 
 #include "stdlib.h" 
+
+#ifdef USE_TFT_LCD
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32开发板
@@ -145,6 +147,8 @@ void LCD_Set_Window(u16 sx,u16 sy,u16 width,u16 height);	//设置窗口
 #define SSD_HPS	(SSD_HOR_BACK_PORCH)
 #define SSD_VT 	(SSD_VER_RESOLUTION+SSD_VER_BACK_PORCH+SSD_VER_FRONT_PORCH)
 #define SSD_VPS (SSD_VER_BACK_PORCH)
+
+#endif
 
 #endif  
 	 

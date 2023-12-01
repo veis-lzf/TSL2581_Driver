@@ -40,7 +40,9 @@ void IIC_NAck(void);				//IIC²»·¢ËÍACKÐÅºÅ
 u8 IIC_Write_One_Byte(u8 daddr,u8 addr,u8 data);
 u8 IIC_Read_One_Byte(u8 daddr,u8 addr);
 #else
+extern I2C_HandleTypeDef hi2c1;
 extern I2C_HandleTypeDef hi2c2;
+extern I2C_HandleTypeDef hi2c3;
 #endif
 
 #endif
